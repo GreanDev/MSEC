@@ -23,6 +23,8 @@ function startServer(){
     let enc = encrypt.encryptMessage("Test Message");
     console.log(`Encryption test message: ${enc.toString('hex')}`);
     console.log(`Decodes to: ${encrypt.decryptMessage(enc)}`);
+    console.log(`Starting on port 8080`);
+    connector.listen();
 }
 
 
