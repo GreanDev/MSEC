@@ -20,7 +20,9 @@ function checkForSetup(){
 
 function startServer(){
     console.log(`${config.user.serverName} will now start with encrpytion key: ${config.encryption.token} and IV: ${config.encryption.iv.toString('hex')}`);
-    console.log(`Encryption test message: ${encrypt.encryptMessage("Test Message", config.encryption.iv)}`);
+    let enc = encrypt.encryptMessage("Test Message");
+    console.log(`Encryption test message: ${enc.toString('hex')}`);
+    console.log(`Decodes to: ${encrypt.decryptMessage(enc)}`);
 }
 
 

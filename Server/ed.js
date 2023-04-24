@@ -5,11 +5,18 @@ const crypt = require('crypto');
 const algorithm = 'aes-128-cbc';
 
 
-function encryptMessage(message, iv){
+function encryptMessage(message){
     let cipher = crypt.createCipheriv(algorithm, Buffer.from(config.encryption.token), Buffer.from(config.encryption.iv));
     let encryptedMessage = cipher.update(message);
-    encryptMessage = Buffer.concat([encryptedMessage, cipher.final()]);
-    return encryptMessage.toString('base64');
+    encryptedMessage = Buffer.concat([encryptedMessage, cipher.final()]);
+    return encryptedMessage;
 }
 
-module.exports = { encryptMessage };
+function decryptMessage(encryptedMessage){
+    let decipher = crypt.createDecipheriv(algorithm, Buffer.from(config.encryption.token), Buffer.from(config.encryption.iv));
+    let decryptedMessage =decipher.update(encryptedMessage);
+    decryptedMessage = Buffer.concat([decryptedMessage, decipher.final()]);
+    return decryptedMessage.toString();
+}
+
+module.exports = { encryptMessage, decryptMessage };
