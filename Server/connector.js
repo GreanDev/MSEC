@@ -15,31 +15,22 @@ var app = express();
 app.use(bodyParser.json());
 
 
-app.post('/', function(req, res){
-    req.rawBody = '';
-    req.setEncoding('utf8');
+app.post('/sendMessage', function(req, res){
 
-    req.on('data', function(chunk){
-        req.rawBody += chunk;
-    });
-
-    req.on('end', function(){
-        console.log(req.rawBody);
         let data = fs.readFileSync('./history.txt');
-        let addTo =  data+`\n${req.headers.displayname}@${config.user.serverName}: ${encrypt.decryptMessage(Buffer.from(req.rawBody, 'base64'))}`;
+        let addTo =  data+`\nuser@server: ${encrypt.rsaDecryptMessage(req.body.clientMessage, fs.readFileSync('./Keys/private_key.pem'))}`;
         console.log(addTo);
         fs.writeFileSync('./history.txt', addTo);
-    });
-    res.end();
+        res.end();
     
 });
 
-app.get('/giveHistory', function(req, res){
-    fs.readFile('./history.txt', 'utf8', function(err, data){
-        res.write(encrypt.encryptMessage(data).toString('base64'));
+app.post('/giveHistory', function(req, res){
+        let data = fs.readFileSync('./history.txt');
+        res.write(encrypt.rsaEncryptMessage(data, req.body.clientPubKey));
         res.end();
-    })
-});
+    }
+);
 
 app.post('/logon', function(req, res){
     console.log(req.body.clientPubKey);

@@ -27,4 +27,12 @@ function rsaEncryptMessage(message, pubKey){
     }, Buffer.from(message)).toString('base64');
 }
 
-module.exports = { encryptMessage, decryptMessage, rsaEncryptMessage };
+function rsaDecryptMessage(message, privKey){
+    return crypt.privateDecrypt({
+        key: privKey,
+        padding: crypt.constants.RSA_PKCS1_PADDING,
+        oaepHash: 'sha256'
+    }, Buffer.from(message, 'base64')).toString();
+}
+
+module.exports = { encryptMessage, decryptMessage, rsaEncryptMessage, rsaDecryptMessage };
