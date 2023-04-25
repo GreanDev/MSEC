@@ -22,7 +22,7 @@ function decryptMessage(encryptedMessage){
 function rsaEncryptMessage(message, pubKey){
     return crypt.publicEncrypt({
         key: pubKey,
-        padding: crypt.constants.RSA_PKCS1_OAEP_PADDING,
+        padding: crypt.constants.RSA_PKCS1_PADDING,
         oaepHash: 'sha256'
     }, Buffer.from(message)).toString('base64');
 }

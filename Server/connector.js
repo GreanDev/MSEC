@@ -43,7 +43,8 @@ app.get('/giveHistory', function(req, res){
 
 app.post('/logon', function(req, res){
     console.log(req.body.clientPubKey);
-    res.write(encrypt.rsaEncryptMessage('pubkey', req.body.clientPubKey));
+    let pubkey = fs.readFileSync('./Keys/public_key.pem');
+    res.write(encrypt.rsaEncryptMessage(pubkey, req.body.clientPubKey));
     res.end();
 });
 
