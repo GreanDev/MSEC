@@ -12,7 +12,7 @@ var options = {
   };
 
 var app = express();
-app.use(bodyParser.raw(options));
+app.use(bodyParser.json());
 
 
 app.post('/', function(req, res){
@@ -39,6 +39,12 @@ app.get('/giveHistory', function(req, res){
         res.write(encrypt.encryptMessage(data).toString('base64'));
         res.end();
     })
+});
+
+app.post('/logon', function(req, res){
+    console.log(req.body.clientPubKey);
+    res.write(encrypt.rsaEncryptMessage('pubkey', req.body.clientPubKey));
+    res.end();
 });
 
 function listen(){

@@ -19,4 +19,12 @@ function decryptMessage(encryptedMessage){
     return decryptedMessage.toString();
 }
 
-module.exports = { encryptMessage, decryptMessage };
+function rsaEncryptMessage(message, pubKey){
+    return crypt.publicEncrypt({
+        key: pubKey,
+        padding: crypt.constants.RSA_PKCS1_OAEP_PADDING,
+        oaepHash: 'sha256'
+    }, Buffer.from(message)).toString('base64');
+}
+
+module.exports = { encryptMessage, decryptMessage, rsaEncryptMessage };
