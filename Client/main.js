@@ -2,15 +2,51 @@
 const encrypt = require('./ed');
 const connector = require('./connector');
 const fs = require('fs');
-const prompt = require('prompt-sync');
+const prompt = require('prompt-sync')();
+const aprompt = require('prompt-async');
+const ui = require('./ui');
+let publicKey = '';
+let privateKey = '';
+let serverKey = '';
+let serverIp = '';
+
+function Init(){
+    let ip = prompt("Enter server IP>");
+    serverIp = ip;
+    
+    connectToServer(serverIp);
+}
+
+function readMessages(){
+    connector.getServerChatHistory(serverIp, privateKey);
+    ui.messages.content = fs.readFileSync('./localHistory.txt').toString();
+    ui.setHistory("f");
+}
+
 
 
 function connectToServer(ip){
     
     encrypt.generateClientKeys();
-    connector.sendServerLogon('127.0.0.1', fs.readFileSync('./public_key.pem').toString());
-    connector.getServerChatHistory('127.0.0.1', fs.readFileSync('./public_key.pem').toString());
-    connector.sendChatMessage('127.0.0.1', fs.readFileSync('./server_pub.pem'), 'Heilo')
+    writeKeys()
+    connector.sendServerLogon(ip, publicKey)
+    writeServerKey();
+    StartMsg();
+    console.log(`Ready for messsages`);
+    ui.giveUiData(serverIp);
 }
 
-connectToServer();
+function writeKeys(){
+     publicKey = fs.readFileSync('./public_key.pem').toString();
+     privateKey = fs.readFileSync('./private_key.pem').toString();
+}
+function writeServerKey(){
+   serverKey = fs.readFileSync('./server_pub.pem');
+}
+
+Init();
+
+function StartMsg(){
+    setInterval(readMessages, 500);
+}
+

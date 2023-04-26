@@ -2,8 +2,20 @@
 const { buffer } = require('stream/consumers');
 const config = require('./config.json');
 const crypt = require('crypto');
+const  fs = require('fs');
 const algorithm = 'aes-128-cbc';
 
+function makeKeys(){
+    const { publicKey, privateKey } = crypt.generateKeyPairSync("rsa", {
+        modulusLength: 2048,
+    });
+
+     privateString = privateKey.export({format: 'pem', 'type': 'pkcs1' });
+     publicString = publicKey.export({format: 'pem', 'type': 'pkcs1' });
+
+     fs.writeFileSync('./Keys/private_key.pem', privateString);
+     fs.writeFileSync('./Keys/public_key.pem', publicString);
+}
 
 function encryptMessage(message){
     let cipher = crypt.createCipheriv(algorithm, Buffer.from(config.encryption.token), Buffer.from(config.encryption.iv));
@@ -35,4 +47,4 @@ function rsaDecryptMessage(message, privKey){
     }, Buffer.from(message, 'base64')).toString();
 }
 
-module.exports = { encryptMessage, decryptMessage, rsaEncryptMessage, rsaDecryptMessage };
+module.exports = { encryptMessage, decryptMessage, rsaEncryptMessage, rsaDecryptMessage, makeKeys };

@@ -13,7 +13,7 @@ function sendServerLogon(ip, key){
 
                 let serverKey = encrypt.rsaDecryptMessage(body, fs.readFileSync('./private_key.pem'));
 
-                console.log(`Got server key: ${serverKey}`);
+                //console.log(`Got server key: ${serverKey}`);
                 fs.writeFileSync('server_pub.pem', serverKey);
             }
         }
@@ -27,7 +27,6 @@ function sendChatMessage(ip, key, message){
         {json: { clientPubKey: key, clientMessage: eMessage}},
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(`Sent message: ${body}`);
             }
         }
     )
